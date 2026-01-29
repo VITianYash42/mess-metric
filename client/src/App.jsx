@@ -1,17 +1,21 @@
 import './App.css'
-import { Features } from './components/Features.jsx'
-import { Footer } from './components/Footer.jsx'
-import { Hero } from './components/Hero.jsx'
-import { NavBar }from './components/NavBar.jsx'
+import { LandingPage } from './components/LandingPage.jsx'
+import { AuthPage } from './components/AuthPage.jsx';
+import { LeaderboardPage } from './components/LeaderboardPage.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   return(
-    <>
-      <NavBar />
-      <Hero />
-      <Features />
-      <Footer />
-    </>
+    <Router>
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-lime-50">
+        <Routes>
+          <Route path='/' element={<LandingPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
+        </Routes>
+      </div>
+
+    </Router>
   )
 }
 

@@ -23,10 +23,10 @@ export function NavBar() {
                   Features
                 </a>
                 <a
-                  href="#impact"
+                  href="/leaderboard"
                   className="text-gray-600 hover:text-green-600 transition"
                 >
-                  Impact
+                  Leaderboard
                 </a>
                 <a
                   href="/"

@@ -1,5 +1,6 @@
 import { ArrowRight, TrendingDown, Users, Leaf, Award } from 'lucide-react';
 import { motion } from "motion/react"
+import { Link } from 'react-router-dom';
 
 
 export function Hero(){
@@ -33,17 +34,17 @@ export function Hero(){
               and creates a greener campus one meal at a time.
             </p>
             <div className="flex gap-4 justify-center">
-              <a to="/auth">
+              <Link to="/auth">
                 <button size="lg" className="rounded-lg p-2 bg-gradient-to-r text-white from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-lg px-8 flex">
                   Student Login
                   <ArrowRight className="ml-2 mt-1 h-5 w-5" />
                 </button>
-              </a>
-              <a to="/auth">
+              </Link>
+              <Link to="/auth">
                 <button size="lg" variant="outline" className="p-1.5 bg-white rounded-lg border-2 border-green-600 text-green-700 hover:bg-green-50 hover:text-black text-lg px-8">
                   Admin/Manager Login
                 </button>
-              </a>
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -74,7 +75,6 @@ export function Hero(){
           ))}
         </motion.div>
 
-        </div>
       </section>
     </>
   )

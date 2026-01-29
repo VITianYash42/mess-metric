@@ -18,7 +18,6 @@ export function LeaderboardContent(){
       mealsSkipped: 130 - i * 2,
       co2Saved: 36 - i * 0.5,
       coins: 1300 - i * 20,
-      badges: Math.max(1, 9 - Math.floor(i / 5)),
       hostel: ['North A', 'North B', 'South A', 'South B', 'East', 'West'][i % 6],
     })),
   ];
@@ -108,7 +107,6 @@ export function LeaderboardContent(){
                         <div className="font-bold text-amber-600">{student.coins}</div>
                         <div className="text-xs text-gray-600">Coins</div>
                       </div>
-                      <Badge variant="outline">{student.badges} Badges</Badge>
                     </div>
                   </motion.div>
               )})}

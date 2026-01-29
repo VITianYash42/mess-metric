@@ -11,9 +11,6 @@ export function Hero(){
     { value: '156', label: 'Green Champions', icon: Award },
   ];
 
-import { ArrowRight } from 'lucide-react';
-
-export function Hero(){
   return(
     <>
       <section className="px-4 sm:px-6 lg:px-8 py-20 bg-emerald-50">

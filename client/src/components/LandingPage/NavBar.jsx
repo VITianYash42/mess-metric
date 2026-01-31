@@ -1,4 +1,5 @@
 import { Leaf } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function NavBar() {
   return (
@@ -42,9 +43,11 @@ export function NavBar() {
                 </a>
               </nav>
 
-              <button className="p-2 rounded-lg text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700">
+              <Link to="/login">
+                <button className="p-2 rounded-lg text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700">
                 Get Started
-              </button>
+                </button>
+              </Link>
             </div>
           </div>
         </header>

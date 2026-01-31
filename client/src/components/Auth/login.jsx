@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react"; 
 import { Link } from 'react-router-dom';
+import { ArrowLeft } from "lucide-react";
 
 export function Login() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -65,6 +66,9 @@ export function Login() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative z-10 w-full max-w-md bg-white/80 backdrop-blur-md border-2 border-[#2f4b69]/10 shadow-2xl p-10 rounded-3xl flex flex-col items-center"
       >
+        <Link to="/">
+          <ArrowLeft className="absolute left-4 top-4"/>
+        </Link>
         <h2 className="text-3xl font-bold mb-2 text-[#2f4b69]">Welcome Back</h2>
         <p className="text-[#10b77c] font-medium mb-8">Please enter your details</p>
         

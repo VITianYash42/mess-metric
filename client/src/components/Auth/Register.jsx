@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
 
 
 export function Register() {
@@ -92,7 +93,10 @@ export function Register() {
         initial="hidden"
         animate="visible"
         className="relative z-10 w-full max-w-md bg-white/80 backdrop-blur-md border-2 border-[#2f4b69]/10 shadow-2xl p-10 rounded-3xl flex flex-col items-center"
-      >
+      > 
+      <Link to="/">
+        <ArrowLeft className="absolute left-4 top-4"/>
+      </Link>
         <motion.div variants={itemVariants} className="text-center mb-8">
           <h2 className="text-3xl font-bold text-[#2f4b69]">Create Account</h2>
           <p className="text-[#10b77c] font-medium">Join us today!</p>

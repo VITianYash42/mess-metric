@@ -1,8 +1,9 @@
 import './App.css'
 import { LandingPage } from './components/LandingPage.jsx'
-import { AuthPage } from './components/AuthPage.jsx';
 import { LeaderboardPage } from './components/LeaderboardPage.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Login } from './components/Auth/login.jsx';
+import { Register } from './components/Auth/Register.jsx';
 
 function App() {
   return(
@@ -10,8 +11,9 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-lime-50">
         <Routes>
           <Route path='/' element={<LandingPage />} />
-          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path='/register' element={<Register />} />
         </Routes>
       </div>
 

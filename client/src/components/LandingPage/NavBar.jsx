@@ -34,6 +34,12 @@ export function NavBar() {
                 >
                   About
                 </a>
+                <a
+                  href="/store"
+                  className="text-gray-600 hover:text-green-600 transition"
+                >
+                  Store
+                </a>
               </nav>
 
               <button className="p-2 rounded-lg text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700">

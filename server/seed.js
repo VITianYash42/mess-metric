@@ -1,15 +1,10 @@
 require("dotenv").config();
-const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
+
+const connectDB = require("./config/db");
 const User = require("./models/User");
 
-// 1️⃣ CONNECT TO DB
-const connectDB = async () => {
-  await mongoose.connect(process.env.MONGO_URI);
-  console.log("MongoDB connected for seeding");
-};
-
-// 2️⃣ DEMO USERS (EDIT THIS ARRAY)
 const demoUsers = [
   {
     name: "Raghav",
@@ -31,16 +26,13 @@ const demoUsers = [
   }
 ];
 
-// 3️⃣ SEED FUNCTION
 const seedUsers = async () => {
   try {
     await connectDB();
 
-    // Optional: clear existing users
     await User.deleteMany();
     console.log("Old users removed");
 
-    // Hash passwords & insert users
     for (let user of demoUsers) {
       user.password = await bcrypt.hash(user.password, 10);
       await User.create(user);

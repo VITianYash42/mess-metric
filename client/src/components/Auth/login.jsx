@@ -1,50 +1,85 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react"; 
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion"; 
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, AlertCircle } from "lucide-react";
 
 export function Login() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
+  const navigate = useNavigate();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const handleLogin = async() => {
-    try{
-      const port = `http://localhost:${import.meta.env.PORT || '5000'}/api/auth/login`;
-      const response = await fetch(`${port}`, {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleLogin = async () => {
+    setError("");
+    
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const port = `http://localhost:${import.meta.env.VITE_PORT || '5000'}/api/auth/login`;
+      
+      const response = await fetch(port, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-      })
+      });
 
       const data = await response.json();
 
-      if(!response.ok){
-        alert("login failed");
+      if (!response.ok) {
+        setError(data.message || "Login failed. Please check your credentials.");
+        setIsLoading(false);
         return;
       }
-      if(data.success){
-        alert("login successfully");
-        return;
+
+      if (data.success) {
+        navigate('/student/dashboard');
       }
-    }catch(error){
+    } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong connecting to the server.");
+      setError("Unable to connect to server. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     const updateMousePosition = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-
     window.addEventListener("mousemove", updateMousePosition);
-
-    return () => {
-      window.removeEventListener("mousemove", updateMousePosition);
-    };
+    return () => window.removeEventListener("mousemove", updateMousePosition);
   }, []);
+
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  const errorVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -10 }
+  };
 
   return (
     <div className="relative flex flex-col justify-center items-center h-screen bg-[#ecfdf5] overflow-hidden">
@@ -58,17 +93,16 @@ export function Login() {
         }}
       ></div>
 
-
-
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
         className="relative z-10 w-full max-w-md bg-white/80 backdrop-blur-md border-2 border-[#2f4b69]/10 shadow-2xl p-10 rounded-3xl flex flex-col items-center"
       >
         <Link to="/">
-          <ArrowLeft className="absolute left-4 top-4"/>
+          <ArrowLeft className="absolute left-4 top-4 text-gray-500 hover:text-[#10b77c] transition-colors"/>
         </Link>
+        
         <h2 className="text-3xl font-bold mb-2 text-[#2f4b69]">Welcome Back</h2>
         <p className="text-[#10b77c] font-medium mb-8">Please enter your details</p>
         
@@ -85,6 +119,7 @@ export function Login() {
               placeholder="name@gmail.com" 
               className="w-full p-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-[#10b77c] transition-all bg-white/50"
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()} // Allow Enter key to login
             />
           </motion.div>
           
@@ -100,16 +135,37 @@ export function Login() {
               placeholder="••••••••" 
               className="w-full p-3 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-[#10b77c] transition-all bg-white/50"
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
             />
           </motion.div>
+
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                variants={errorVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="flex items-center gap-2 bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-200 w-full"
+              >
+                <AlertCircle size={16} />
+                <span>{error}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <motion.button 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full mt-6 bg-[#10b77c] text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-[#0b8359] hover:shadow-green-500/30 transition-all"
+            disabled={isLoading}
+            className={`w-full mt-6 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all ${
+              isLoading 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-[#10b77c] hover:bg-[#0b8359] hover:shadow-green-500/30"
+            }`}
             onClick={handleLogin}
           >
-            Sign In
+            {isLoading ? "Signing In..." : "Sign In"}
           </motion.button>
         </div>
 

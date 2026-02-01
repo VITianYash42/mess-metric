@@ -43,7 +43,7 @@ export function NavBar() {
                 </a>
               </nav>
 
-              <Link to="/login">
+              <Link to="/register">
                 <button className="p-2 rounded-lg text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700">
                 Get Started
                 </button>

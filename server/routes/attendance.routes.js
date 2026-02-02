@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 const { markAttendance } = require("../controllers/attendance.controller");
+const auth = require("../middleware/auth.middleware");
 
-router.post("/mark", markAttendance);
+router.post("/mark", auth, markAttendance);
 
 module.exports = router;

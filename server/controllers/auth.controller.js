@@ -1,7 +1,16 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// REGISTER controller
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+};
+
+// REGISTER
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -13,27 +22,27 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashedPassword
     });
 
-    res.json({
-      success: true,
-      message: "Account created successfully"
-    });
+    res.json({ success: true, message: "Account created" });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// LOGIN controller
+// LOGIN (email OR name)
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      $or: [{ email: identifier }, { name: identifier }]
+    });
+
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -43,12 +52,16 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    const token = generateToken(user);
+
     res.json({
       success: true,
+      token,
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        mealCoins: user.mealCoins
       }
     });
   } catch (err) {

@@ -8,6 +8,9 @@ const aiRoutes = require("./routes/ai.routes");
 // database
 const connectDB = require("./config/db");
 
+
+
+
 const app = express();
 
 // For connecting admin
@@ -48,6 +51,11 @@ app.get("/", (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// menu routes (serves weekly/today menu for user dashboard)
+const menuRoutes = require("./routes/menu.routes");
+app.use("/api/menu", menuRoutes);
+
 
 // Health check endpoint
 app.get("/health", (req, res) => {

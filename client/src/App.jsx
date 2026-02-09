@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Login } from './components/Auth/login.jsx';
 import { Register } from './components/Auth/Register.jsx';
 import { StudentDashboardPage } from './components/StudentDashboardPage.jsx';
+import { StudentProfilePage } from './components/StudentProfilePage.jsx';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute.jsx'; // <--- Import this
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           {/* WRAP THE PROTECTED ROUTES LIKE THIS: */}
           <Route element={<ProtectedRoute />}>
              <Route path='/student/dashboard' element={<StudentDashboardPage />} />
+             <Route path='/student/profile' element={<StudentProfilePage />} />
           </Route>
 
         </Routes>

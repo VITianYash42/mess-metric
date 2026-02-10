@@ -43,7 +43,7 @@ export function Hero(){
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
               </Link>
-              <Link to="/login" className="w-full sm:w-auto">
+              <Link to="/admin/login" className="w-full sm:w-auto">
                 <button className="w-full sm:w-auto p-2.5 bg-white rounded-lg border-2 border-green-600 text-green-700 hover:bg-green-50 hover:text-black text-base md:text-lg font-medium px-6 transition-colors">
                   Admin/Manager Login
                 </button>

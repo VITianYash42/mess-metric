@@ -75,7 +75,7 @@ export function StudentDashboardPage() {
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <WeeklyRewardBadge />
+          <WeeklyRewardBadge  />
         </motion.div>
 
         <motion.div variants={itemVariants}>

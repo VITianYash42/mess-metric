@@ -17,7 +17,7 @@ const menuSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 
-// Ensure we only have one menu document (singleton for app-wide menu)
-menuSchema.index({ _id: 1 }, { unique: true });
+// The default _id index is sufficient; MongoDB already enforces uniqueness.
+// (redundant custom index removed to avoid warnings)
 
 module.exports = mongoose.model("Menu", menuSchema);

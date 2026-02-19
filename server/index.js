@@ -6,6 +6,7 @@ require("dotenv").config();
 const authRoutes = require("./routes/auth.routes");
 const leaderboardRoutes = require("./routes/leaderboard.routes");
 const aiRoutes = require("./routes/ai.routes");
+const reportRoutes = require("./routes/report.routes");
 const connectDB = require("./config/db");
 
 const app = express();
@@ -65,6 +66,7 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/reports", reportRoutes);
 
 // 👇 THIS WAS MISSING! ADD THIS LINE:
 app.use("/api/food-reviews", require("./routes/foodReview.routes")); 

@@ -58,3 +58,29 @@ exports.analyzeFeedback = async (req, res) => {
         return res.status(500).json({ success: false, message: "AI Analysis Failed" });
     }
 };
+
+// -------------------------------------------------------------
+// Procurement calculator (simple recipe-based math)
+// -------------------------------------------------------------
+exports.calculateProcurement = (req, res) => {
+    try {
+        const { students } = req.body;
+        if (typeof students !== 'number' || students < 0) {
+            return res.status(400).json({ success: false, message: 'Valid number of students required.' });
+        }
+
+        // hardcoded recipe ratios per student
+        const rice = +(students * 0.15).toFixed(3);
+        const dal = +(students * 0.10).toFixed(3);
+        const vegetables = +(students * 0.20).toFixed(3);
+
+        return res.status(200).json({
+            success: true,
+            data: { rice, dal, vegetables }
+        });
+
+    } catch (error) {
+        console.error('❌ Procurement calculation error:', error);
+        return res.status(500).json({ success: false, message: 'Unable to calculate procurement.' });
+    }
+};

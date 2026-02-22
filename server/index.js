@@ -70,6 +70,8 @@ app.use("/api/reports", reportRoutes);
 
 // 👇 THIS WAS MISSING! ADD THIS LINE:
 app.use("/api/food-reviews", require("./routes/foodReview.routes")); 
+// also expose same router at /api/reviews for admin list-fetching
+app.use("/api/reviews", require("./routes/foodReview.routes"));
 
 app.use("/api/admin/auth", require("./routes/admin.auth.routes"));
 app.use("/api/attendance", require("./routes/attendance.routes"));

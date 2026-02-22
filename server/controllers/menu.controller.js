@@ -85,3 +85,29 @@ exports.getTodayMenu = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch today's menu" });
   }
 };
+
+/** PUT/POST /api/menu — update the weekly menu. */
+exports.updateMenu = async (req, res) => {
+  try {
+    const { weeklyMenu } = req.body;
+    if (!Array.isArray(weeklyMenu)) {
+      return res.status(400).json({ success: false, message: "weeklyMenu array is required" });
+    }
+
+    // Either update existing doc or create new one
+    let menuDoc = await Menu.findOne();
+    if (!menuDoc) {
+      menuDoc = await Menu.create({ weeklyMenu });
+    } else {
+      menuDoc.weeklyMenu = weeklyMenu;
+      menuDoc.updatedAt = Date.now();
+      await menuDoc.save();
+    }
+
+    const weeklyMenuObj = buildWeeklyMenuObject(menuDoc.weeklyMenu);
+    res.json({ success: true, weeklyMenu: weeklyMenuObj, updatedAt: menuDoc.updatedAt });
+  } catch (err) {
+    console.error("updateMenu error:", err);
+    res.status(500).json({ success: false, message: "Failed to update menu" });
+  }
+};

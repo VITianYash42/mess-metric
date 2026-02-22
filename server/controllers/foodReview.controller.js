@@ -57,3 +57,21 @@ exports.createReview = async (req, res) => {
     });
   }
 };
+
+// ADMIN: fetch all reviews
+exports.getAllReviews = async (req, res) => {
+  // only admins should call this endpoint. tokens issued via admin login
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ success: false, message: "Forbidden" });
+  }
+
+  try {
+    const reviews = await FoodReview.find()
+      .populate("user", "name registrationNo messName");
+
+    res.json({ success: true, data: reviews });
+  } catch (err) {
+    console.error("Error fetching reviews:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch reviews" });
+  }
+};

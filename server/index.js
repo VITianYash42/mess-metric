@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
+// load environment variables from project root
+require("dotenv").config({ path: require("path").resolve(__dirname, "..", ".env") });
 
 // Import Routes
 const authRoutes = require("./routes/auth.routes");
@@ -77,6 +78,10 @@ app.use("/api/admin/auth", require("./routes/admin.auth.routes"));
 app.use("/api/attendance", require("./routes/attendance.routes"));
 app.use("/api/menu", require("./routes/menu.routes"));
 app.use("/api/rewards", require("./routes/reward.routes"));
+
+// meal skip requests
+app.use("/api/meals", require("./routes/skip.routes"));
+
 // Error Handling
 app.use((err, req, res, next) => {
   console.error("❌ Server Error:", err);

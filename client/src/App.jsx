@@ -11,6 +11,7 @@ import { AdminLogin } from './components/Auth/AdminLogin.jsx';
 import { AdminRegister } from './components/Auth/AdminRegister.jsx';
 import { AdminDashboardPage } from './components/AdminDashboardPage.jsx';
 import { StorePage } from './components/StorePage.jsx';
+import { KitchenDisplayPage } from './components/KitchenDisplayPage.jsx';
 
 function App() {
   return(
@@ -29,8 +30,12 @@ function App() {
              <Route path='/student/profile' element={<StudentProfilePage />} />
           </Route>
 
-          <Route path='/admin/dashboard' element={<AdminDashboardPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path='admin/dashboard' element={<AdminDashboardPage />} />
+          </Route>
+
           <Route path='/store' element={<StorePage />} />
+          <Route path="/kitchen-display" element={<KitchenDisplayPage />} />
         </Routes>
       </div>
     </Router>

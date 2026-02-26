@@ -35,6 +35,29 @@ const foodReviewSchema = new mongoose.Schema({
     keywords: [String]
   },
 
+  // 👇 ADDED FOR ADMIN DASHBOARD FEATURES 👇
+  status: {
+    type: String,
+    enum: ["unread", "read"],
+    default: "unread"
+  },
+
+  reply: {
+    type: String,
+    default: null
+  },
+
+  likes: {
+    type: Number,
+    default: 0
+  },
+
+  dislikes: {
+    type: Number,
+    default: 0
+  },
+  // 👆 END ADDED FIELDS 👆
+
   date: {
     type: Date,
     default: Date.now

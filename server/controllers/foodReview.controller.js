@@ -75,3 +75,32 @@ exports.getAllReviews = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch reviews" });
   }
 };
+
+// ADMIN: update review (mark as read or reply)
+exports.updateReview = async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ success: false, message: "Forbidden" });
+  }
+
+  try {
+    const { status, reply } = req.body;
+    const updateData = {};
+    if (status) updateData.status = status;
+    if (reply) updateData.reply = reply;
+
+    const review = await FoodReview.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!review) {
+      return res.status(404).json({ success: false, message: "Review not found" });
+    }
+
+    res.json({ success: true, data: review });
+  } catch (err) {
+    console.error("Error updating review:", err);
+    res.status(500).json({ success: false, message: "Failed to update review" });
+  }
+};

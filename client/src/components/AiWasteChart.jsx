@@ -1,65 +1,47 @@
+// client/src/components/AiWasteChart.jsx
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
-import { motion } from 'framer-motion'; // Fixed the import to standard framer-motion
+import { motion } from 'framer-motion';
 
 const AiWasteChart = () => {
   const [data, setData] = useState([]);
+  const [insight, setInsight] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // 👉 FIX 1: Changed fallback port to 5001 to match your Python app.py
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-
-  const getDayName = (offset) => {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const d = new Date();
-    d.setDate(d.getDate() + offset);
-    return days[d.getDay()];
-  };
+  // Pointing to your Python AI Engine port
+  const AI_API_URL = import.meta.env.VITE_AI_URL || 'http://localhost:5001';
 
   useEffect(() => {
     const fetchForecast = async () => {
-      const forecastData = [];
-      const today = new Date().getDay();
-
-      for (let i = 0; i < 7; i++) {
-        const dayIndex = (today + i) % 7;
-        const isWeekend = (dayIndex === 0 || dayIndex === 6) ? 1 : 0;
-        const mockAttendance = Math.floor(1100 + Math.random() * 200);
-
-        try {
-          // 👉 FIX 2: Changed route to exactly match your Flask @app.route('/predict')
-          const response = await axios.post(`${API_URL}/predict`, {
-            attendance: mockAttendance,
-            day_of_week: dayIndex,
-            is_weekend: isWeekend,
-            is_special_event: 0
-          });
-
-          forecastData.push({
-            day: getDayName(i),
-            // 👉 FIX 3: Removed the extra ".data" to correctly parse your Python JSON
-            waste: parseFloat(response.data.predicted_waste_kg.toFixed(1)), 
-            attendance: mockAttendance
-          });
-        } catch (error) {
-          console.warn("AI Server busy or offline, using fallback data for day", i);
-          forecastData.push({ 
-            day: getDayName(i), 
-            waste: isWeekend ? 35 + i : 45 + i,
-            attendance: 1200 
-          });
+      try {
+        // Fetching the new 5-day forecast from your updated app.py
+        const response = await axios.get(`${AI_API_URL}/api/ai/forecast`);
+        
+        if (response.data.success) {
+          setData(response.data.data.chartData);
+          setInsight(response.data.data.insight);
         }
+      } catch (error) {
+        console.warn("AI Server busy or offline, using fallback data");
+        // Fallback standard data so the UI doesn't break if Python is down
+        setData([
+          { day: "Mon", predictedWasteKg: 40 },
+          { day: "Tue", predictedWasteKg: 42 },
+          { day: "Wed", predictedWasteKg: 38 },
+          { day: "Thu", predictedWasteKg: 45 },
+          { day: "Fri", predictedWasteKg: 35 }
+        ]);
+        setInsight("AI Model offline. Showing baseline forecast.");
+      } finally {
+        setLoading(false);
       }
-
-      setData(forecastData);
-      setLoading(false);
     };
 
     fetchForecast();
   }, []);
 
-  if (loading) return <div className="text-center p-10 text-emerald-600 animate-pulse">🧠 AI is calculating forecast...</div>;
+  if (loading) return <div className="text-center p-10 text-emerald-600 animate-pulse">🤖 AI is calculating forecast...</div>;
 
   return (
     <motion.div 
@@ -67,17 +49,25 @@ const AiWasteChart = () => {
       animate={{ opacity: 1, y: 0 }}
       className="bg-white p-6 rounded-xl shadow-lg border border-emerald-100"
     >
-      <div className="flex justify-between items-end mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-4 gap-4">
         <div>
            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <span className="text-2xl">📉</span> AI Waste Forecast
+            <span className="text-2xl">📈</span> AI Waste Forecast
           </h2>
-          <p className="text-sm text-gray-500 ml-9">Predicted waste for the next 7 days</p>
+          <p className="text-sm text-gray-500 ml-9">Predicted waste for the next 5 days</p>
         </div>
-        <div className="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium">
+        <div className="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium shadow-sm">
           Live Model v1.0
         </div>
       </div>
+
+      {/* Render the dynamic AI Insight here */}
+      {insight && (
+        <div className="mb-6 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-sm font-medium flex items-start gap-2">
+          <span className="text-amber-500 text-base">💡</span> 
+          <span>{insight}</span>
+        </div>
+      )}
       
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
@@ -112,7 +102,7 @@ const AiWasteChart = () => {
             
             <Area 
               type="monotone" 
-              dataKey="waste" 
+              dataKey="predictedWasteKg" 
               stroke="#10b981" 
               strokeWidth={3}
               fillOpacity={0.2} 

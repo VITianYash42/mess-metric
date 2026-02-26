@@ -123,6 +123,7 @@ export function StudentDashboardNavBar({user}) {
   };
 
   return (
+    <>
     <header className="bg-white/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex items-center justify-between">
@@ -242,6 +243,7 @@ export function StudentDashboardNavBar({user}) {
         </div>
       </div>
 
+    </header>
       {isProfileModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div 
@@ -324,6 +326,6 @@ export function StudentDashboardNavBar({user}) {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

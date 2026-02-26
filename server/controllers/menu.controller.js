@@ -61,8 +61,19 @@ exports.getFullMenu = async (req, res) => {
     if (!menuDoc || !menuDoc.weeklyMenu || menuDoc.weeklyMenu.length === 0) {
       menuDoc = await Menu.create({ weeklyMenu: DEFAULT_WEEKLY_MENU });
     }
-    const weeklyMenu = buildWeeklyMenuObject(menuDoc.weeklyMenu);
-    res.json({ weeklyMenu, updatedAt: menuDoc.updatedAt });
+
+    // Convert stored weeklyMenu (array of {day, meals:[...]}) into flat array
+    // of objects that the admin dashboard expects (day, breakfast, lunch, snacks, dinner).
+    const menuArray = menuDoc.weeklyMenu.map(d => {
+      const entry = { day: d.day };
+      d.meals.forEach(m => {
+        // lowercase key for consistency with frontend rendering
+        entry[m.type.toLowerCase()] = m.menu;
+      });
+      return entry;
+    });
+
+    res.json({ data: menuArray, updatedAt: menuDoc.updatedAt });
   } catch (err) {
     console.error("getFullMenu error:", err);
     res.status(500).json({ success: false, message: "Failed to fetch menu" });
@@ -105,7 +116,15 @@ exports.updateMenu = async (req, res) => {
     }
 
     const weeklyMenuObj = buildWeeklyMenuObject(menuDoc.weeklyMenu);
-    res.json({ success: true, weeklyMenu: weeklyMenuObj, updatedAt: menuDoc.updatedAt });
+    // also return array format for consistency with getFullMenu
+  const menuArray = menuDoc.weeklyMenu.map(d => {
+    const entry = { day: d.day };
+    d.meals.forEach(m => {
+      entry[m.type.toLowerCase()] = m.menu;
+    });
+    return entry;
+  });
+  res.json({ success: true, weeklyMenu: weeklyMenuObj, data: menuArray, updatedAt: menuDoc.updatedAt });
   } catch (err) {
     console.error("updateMenu error:", err);
     res.status(500).json({ success: false, message: "Failed to update menu" });

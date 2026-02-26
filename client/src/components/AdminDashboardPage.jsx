@@ -94,8 +94,9 @@ export function AdminDashboardPage() {
         const formattedMeals = (mealsRes.data.data || []).map(m => ({...m, id: m._id || m.id}));
         setPendingApprovals(formattedMeals);
         
-        // Map menu
-        setMenu(menuRes.data.data || []);
+        // Map menu – backend now returns array under data; fall back to old weeklyMenu if necessary
+        const menuData = menuRes.data.data || menuRes.data.weeklyMenu || [];
+        setMenu(menuData);
 
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
